@@ -1,3 +1,6 @@
+## 3.0.0
+* change package name to flutter_bluetooth_scanner
+
 ## 2.5.2
 
 * Revert Android compileSdkVersion back to 30 as temporary fix for Android 12 incompatibilities
