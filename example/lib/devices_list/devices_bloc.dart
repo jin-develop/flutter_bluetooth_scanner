@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:fimber/fimber.dart';
 import 'package:flutter_ble_lib_example/model/ble_device.dart';
 import 'package:flutter_ble_lib_example/repository/device_repository.dart';
-import 'package:flutter_ble_lib_ios_15/flutter_ble_lib.dart';
+import 'package:flutter_bluetooth_scanner/flutter_ble_lib.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 

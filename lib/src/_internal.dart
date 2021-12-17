@@ -7,11 +7,11 @@ import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ble_lib_ios_15/flutter_ble_lib.dart';
-import 'package:flutter_ble_lib_ios_15/src/_constants.dart';
-import 'package:flutter_ble_lib_ios_15/src/_containers.dart';
-import 'package:flutter_ble_lib_ios_15/src/util/_transaction_id_generator.dart';
-import 'package:flutter_ble_lib_ios_15/src/util/_transformers.dart';
+import 'package:flutter_bluetooth_scanner/flutter_ble_lib.dart';
+import 'package:flutter_bluetooth_scanner/src/_constants.dart';
+import 'package:flutter_bluetooth_scanner/src/_containers.dart';
+import 'package:flutter_bluetooth_scanner/src/util/_transaction_id_generator.dart';
+import 'package:flutter_bluetooth_scanner/src/util/_transformers.dart';
 
 import '_managers_for_classes.dart';
 

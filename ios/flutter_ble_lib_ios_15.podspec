@@ -2,7 +2,7 @@
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
 #
 Pod::Spec.new do |s|
-  s.name             = 'flutter_ble_lib_ios_15'
+  s.name             = 'flutter_bluetooth_scanner'
   s.version          = '2.4.1'
   s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC

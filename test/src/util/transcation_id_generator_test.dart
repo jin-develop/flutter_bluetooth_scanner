@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ble_lib_ios_15/src/util/_transaction_id_generator.dart';
+import 'package:flutter_bluetooth_scanner/src/util/_transaction_id_generator.dart';
 
 void main() {
   test("should be able to generate an id", () {

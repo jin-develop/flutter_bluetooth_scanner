@@ -37,9 +37,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter_ble_lib_ios_15/src/_internal.dart';
-import 'package:flutter_ble_lib_ios_15/src/_managers_for_classes.dart';
-import 'package:flutter_ble_lib_ios_15/src/util/_transaction_id_generator.dart';
+import 'package:flutter_bluetooth_scanner/src/_internal.dart';
+import 'package:flutter_bluetooth_scanner/src/_managers_for_classes.dart';
+import 'package:flutter_bluetooth_scanner/src/util/_transaction_id_generator.dart';
 
 import 'src/_managers_for_classes.dart';
 

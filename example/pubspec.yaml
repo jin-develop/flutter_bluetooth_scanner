@@ -23,7 +23,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_ble_lib_ios_15:
+  flutter_bluetooth_scanner:
     path: ../
 
 # For information on the generic Dart part of this file, see the

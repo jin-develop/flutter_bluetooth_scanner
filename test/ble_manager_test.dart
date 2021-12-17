@@ -1,4 +1,4 @@
-import 'package:flutter_ble_lib_ios_15/flutter_ble_lib.dart';
+import 'package:flutter_bluetooth_scanner/flutter_ble_lib.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

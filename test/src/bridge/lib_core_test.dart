@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_ble_lib_ios_15/flutter_ble_lib.dart';
-import 'package:flutter_ble_lib_ios_15/src/_internal.dart';
-import 'package:flutter_ble_lib_ios_15/src/_constants.dart';
+import 'package:flutter_bluetooth_scanner/flutter_ble_lib.dart';
+import 'package:flutter_bluetooth_scanner/src/_internal.dart';
+import 'package:flutter_bluetooth_scanner/src/_constants.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';

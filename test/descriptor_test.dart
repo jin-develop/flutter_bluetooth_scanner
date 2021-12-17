@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:flutter_ble_lib_ios_15/flutter_ble_lib.dart';
-import 'package:flutter_ble_lib_ios_15/src/_managers_for_classes.dart';
+import 'package:flutter_bluetooth_scanner/flutter_ble_lib.dart';
+import 'package:flutter_bluetooth_scanner/src/_managers_for_classes.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:flutter_test/flutter_test.dart';

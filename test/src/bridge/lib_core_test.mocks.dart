@@ -5,8 +5,8 @@
 import 'dart:async' as _i4;
 import 'dart:typed_data' as _i3;
 
-import 'package:flutter_ble_lib_ios_15/flutter_ble_lib.dart' as _i2;
-import 'package:flutter_ble_lib_ios_15/src/_internal.dart' as _i5;
+import 'package:flutter_bluetooth_scanner/flutter_ble_lib.dart' as _i2;
+import 'package:flutter_bluetooth_scanner/src/_internal.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: comment_references
