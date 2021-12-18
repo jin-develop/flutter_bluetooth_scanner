@@ -32,7 +32,7 @@ mixin ScanningMixin on FlutterBLE {
     bool allowDuplicates,
   ) {
     final streamController = StreamController<ScanResult>.broadcast(
-      onListen: () => _methodChannel.invokeMethod(
+      onListen: () => _backgroundChannel.invokeMethod(
         MethodName.startDeviceScan,
         <String, dynamic>{
           ArgumentName.scanMode: scanMode,
@@ -52,7 +52,7 @@ mixin ScanningMixin on FlutterBLE {
   }
 
   Future<void> stopDeviceScan() async {
-    await _methodChannel.invokeMethod(MethodName.stopDeviceScan);
+    await _backgroundChannel.invokeMethod(MethodName.stopDeviceScan);
     _resetScanEvents();
     return;
   }

@@ -140,6 +140,10 @@ public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, Ac
             case MethodName.IS_CLIENT_CREATED:
                 isClientCreated(result);
                 break;
+            case "FlutterBLE.requestInitialize":
+                Log.d(TAG, "FlutterBLE.requestInitialize");
+                
+                break;
             default:
                 result.notImplemented();
         }

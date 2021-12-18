@@ -25,7 +25,7 @@ mixin BluetoothStateMixin on FlutterBLE {
         Future.error(BleError.fromJson(jsonDecode(errorJson.details))));
   }
 
-  Future<BluetoothState> state() => _methodChannel
+  Future<BluetoothState> state() => _backgroundChannel
       .invokeMethod(MethodName.getState)
       .then(_mapToBluetoothState);
 
