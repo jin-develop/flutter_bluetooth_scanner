@@ -2,6 +2,7 @@ package com.polidea.flutter_ble_lib;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.polidea.flutter_ble_lib.constant.ArgumentKey;
@@ -142,6 +143,8 @@ public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, Ac
                 break;
             case "FlutterBLE.requestInitialize":
                 Log.d(TAG, "FlutterBLE.requestInitialize");
+                Intent intent = new Intent(context, BleBackgroundService.class);
+                context.startService(intent);
                 
                 break;
             default:

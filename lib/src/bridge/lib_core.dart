@@ -17,10 +17,10 @@ abstract class FlutterBLE {
   }
 
   Future<void> initialize() async {
-    final CallbackHandle callback =
+    final CallbackHandle? callback =
     PluginUtilities.getCallbackHandle(callbackDispatcher);
     await _methodChannel.invokeMethod('FlutterBLE.requestInitialize',
-        <dynamic>[callback.toRawHandle()]);
+        <dynamic>[callback?.toRawHandle()]);
   }
 
   void callbackDispatcher() {
