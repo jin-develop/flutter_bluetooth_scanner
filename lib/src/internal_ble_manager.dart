@@ -11,6 +11,7 @@ class InternalBleManager
   
   InternalBleManager() {
     _bleLib = FlutterBleLib(this);
+    _bleLib.initialize();
   }
 
   @override

@@ -73,7 +73,7 @@ import io.flutter.view.FlutterCallbackInformation;
 import io.flutter.view.FlutterMain;
 
 public class BleBackgroundService extends Service implements MethodChannel.MethodCallHandler {
-    private static final String TAG = "FlutterBluetooth";
+    private static final String TAG = "BluetoothService";
     AtomicBoolean isRunning = new AtomicBoolean(false);
     private FlutterEngine backgroundEngine;
     private MethodChannel methodChannel;
@@ -85,6 +85,13 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
     private RestoreStateStreamHandler restoreStateStreamHandler = new RestoreStateStreamHandler();
     private ScanningStreamHandler scanningStreamHandler = new ScanningStreamHandler();
 
+    public static void setCallbackDispatcher(Context context, long callbackHandleId) {
+        SharedPreferences pref = context.getSharedPreferences("bluetooth_scanner_plugin_cache", MODE_PRIVATE);
+        pref.edit()
+                .putLong("callback_dispatch_handler", callbackHandleId)
+                .apply();
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -93,12 +100,14 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
 
     @Override
     public void onCreate() {
+        Log.d(TAG, "onCreate");
         context = getApplicationContext();
         super.onCreate();
     }
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "onDestroy");
         isRunning.set(false);
 
         if (backgroundEngine != null) {
@@ -112,6 +121,7 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand");
         runService();
 
         return START_STICKY;
@@ -122,8 +132,11 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
             if (isRunning.get() || (backgroundEngine != null && !backgroundEngine.getDartExecutor().isExecutingDart()))
                 return;
 
-            SharedPreferences pref = getSharedPreferences("bluetooth_scanner_plugin_cache", MODE_PRIVATE);
-            long callbackHandle = pref.getLong("callback_handle", 0);
+            //SharedPreferences pref = getSharedPreferences("bluetooth_scanner_plugin_cache", MODE_PRIVATE);
+            long callbackHandle = context.getSharedPreferences(
+                    "bluetooth_scanner_plugin_cache",
+                    Context.MODE_PRIVATE)
+                    .getLong("callback_dispatch_handler", 0);
 
             FlutterCallbackInformation callback = FlutterCallbackInformation.lookupCallbackInformation(callbackHandle);
             if (callback == null) {
@@ -136,6 +149,8 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
             backgroundEngine.getServiceControlSurface().attachToService(BleBackgroundService.this, null, true);
 
             methodChannel = new MethodChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), "flutter_ble_lib_bg", JSONMethodCodec.INSTANCE);
+
+            Log.d(TAG, "complete background method channel");
 
             final EventChannel bluetoothStateChannel = new EventChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), ChannelName.ADAPTER_STATE_CHANGES_BG);
             final EventChannel restoreStateChannel = new EventChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), ChannelName.STATE_RESTORE_EVENTS_BG);
@@ -184,6 +199,7 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
     }
 
     private void createClient(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Log.d(TAG, "createClient : " + call.method);
         if (bleAdapter != null) {
             Log.w(TAG, "Overwriting existing native client. Use BleManager#isClientCreated to check whether a client already exists.");
         }

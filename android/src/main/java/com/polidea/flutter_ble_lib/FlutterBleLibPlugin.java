@@ -34,6 +34,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+
+import org.json.JSONObject;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -115,6 +118,8 @@ public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, Ac
     @Override
     public void onMethodCall(MethodCall call, Result result) {
         Log.d(TAG, "on native side observed method: " + call.method);
+        JSONObject arg = (JSONObject) call.arguments;
+
         for (CallDelegate delegate : delegates) {
             if (delegate.canHandle(call)) {
                 delegate.onMethodCall(call, result);
@@ -122,33 +127,39 @@ public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, Ac
             }
         }
 
-        switch (call.method) {
-            case MethodName.CREATE_CLIENT:
-                createClient(call, result);
-                break;
-            case MethodName.DESTROY_CLIENT:
-                destroyClient(result);
-                break;
-            case MethodName.START_DEVICE_SCAN:
-                startDeviceScan(call, result);
-                break;
-            case MethodName.STOP_DEVICE_SCAN:
-                stopDeviceScan(result);
-                break;
-            case MethodName.CANCEL_TRANSACTION:
-                cancelTransaction(call, result);
-                break;
-            case MethodName.IS_CLIENT_CREATED:
-                isClientCreated(result);
-                break;
-            case "FlutterBLE.requestInitialize":
-                Log.d(TAG, "FlutterBLE.requestInitialize");
-                Intent intent = new Intent(context, BleBackgroundService.class);
-                context.startService(intent);
-                
-                break;
-            default:
-                result.notImplemented();
+        try {
+            switch (call.method) {
+                case MethodName.CREATE_CLIENT:
+                    createClient(call, result);
+                    break;
+                case MethodName.DESTROY_CLIENT:
+                    destroyClient(result);
+                    break;
+                case MethodName.START_DEVICE_SCAN:
+                    startDeviceScan(call, result);
+                    break;
+                case MethodName.STOP_DEVICE_SCAN:
+                    stopDeviceScan(result);
+                    break;
+                case MethodName.CANCEL_TRANSACTION:
+                    cancelTransaction(call, result);
+                    break;
+                case MethodName.IS_CLIENT_CREATED:
+                    isClientCreated(result);
+                    break;
+                case "FlutterBLE.requestInitialize":
+                    Log.d(TAG, "FlutterBLE.requestInitialize");
+                    long callbackHandle = arg.getLong("handle");
+                    BleBackgroundService.setCallbackDispatcher(context, callbackHandle);
+                    Intent intent = new Intent(context, BleBackgroundService.class);
+                    context.startService(intent);
+
+                    break;
+                default:
+                    result.notImplemented();
+            }
+        } catch(Exception e) {
+            Log.e(TAG, "onMethodCall " + e.getMessage());
         }
     }
 

@@ -19,8 +19,15 @@ abstract class FlutterBLE {
   Future<void> initialize() async {
     final CallbackHandle? callback =
     PluginUtilities.getCallbackHandle(callbackDispatcher);
+    if (callback == null) {
+      print("initialize callback is null");
+      return;
+    }
+    print("initialize callback : $callback");
     await _methodChannel.invokeMethod('FlutterBLE.requestInitialize',
-        <dynamic>[callback?.toRawHandle()]);
+        {
+          "handle": callback.toRawHandle(),
+        });
   }
 
   void callbackDispatcher() {
@@ -30,22 +37,20 @@ abstract class FlutterBLE {
 
     _backgroundChannel.setMethodCallHandler((MethodCall call) async {
       print("backgroundChannel.setMethodCallHandler $call");
-      // final List<dynamic> args = call.arguments;
-      // final Function callback = PluginUtilities.getCallbackFromHandle(
-      //     CallbackHandle.fromRawHandle(args[0]));
-      // assert(callback != null);
-      // final List<String> triggeringGeofences = args[1].cast<String>();
-      // final List<double> locationList = <double>[];
-      // // 0.0 becomes 0 somewhere during the method call, resulting in wrong
-      // // runtime type (int instead of double). This is a simple way to get
-      // // around casting in another complicated manner.
-      // args[2]
-      //     .forEach((dynamic e) => locationList.add(double.parse(e.toString())));
-      // final Location triggeringLocation = locationFromList(locationList);
-      // final GeofenceEvent event = intToGeofenceEvent(args[3]);
-      // callback(triggeringGeofences, triggeringLocation, event);
+      final List<dynamic> args = call.arguments;
+      final Function? callback = PluginUtilities.getCallbackFromHandle(
+          CallbackHandle.fromRawHandle(args[0]));
+      assert(callback != null);
+      final List<String> triggeringGeofences = args[1].cast<String>();
+      final List<double> locationList = <double>[];
+      // 0.0 becomes 0 somewhere during the method call, resulting in wrong
+      // runtime type (int instead of double). This is a simple way to get
+      // around casting in another complicated manner.
+      args[2]
+          .forEach((dynamic e) => locationList.add(double.parse(e.toString())));
+      callback!(triggeringGeofences);
     });
-    _backgroundChannel.invokeMethod('FlutterBLE.initialized');
+    //_backgroundChannel.invokeMethod('FlutterBLE.initialized');
   }
 }
 
