@@ -11,8 +11,10 @@ class InternalBleManager
   
   InternalBleManager() {
     _bleLib = FlutterBleLib(this);
-    _bleLib.initialize();
   }
+
+  @override
+  Future<void> initialize(void Function() bleStart) => _bleLib.initialize(bleStart);
 
   @override
   Future<bool> isClientCreated() => _bleLib.isClientCreated();
@@ -61,6 +63,9 @@ class InternalBleManager
     bool allowDuplicates = false,
   }) =>
       _bleLib.startDeviceScan(scanMode, callbackType, uuids, allowDuplicates);
+
+  @override
+  Stream<ScanResult> get scanEvents => _bleLib.scanResults();
 
   @override
   Future<void> stopPeripheralScan() => _bleLib.stopDeviceScan();

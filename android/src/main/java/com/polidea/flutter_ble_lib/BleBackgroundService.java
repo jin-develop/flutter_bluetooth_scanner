@@ -76,7 +76,7 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
     private static final String TAG = "BluetoothService";
     AtomicBoolean isRunning = new AtomicBoolean(false);
     private FlutterEngine backgroundEngine;
-    private MethodChannel methodChannel;
+    static MethodChannel methodChannel;
     private DartExecutor.DartCallback dartCallback;
     private List<CallDelegate> delegates = new LinkedList<>();
     private BleAdapter bleAdapter;
@@ -88,7 +88,7 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
     public static void setCallbackDispatcher(Context context, long callbackHandleId) {
         SharedPreferences pref = context.getSharedPreferences("bluetooth_scanner_plugin_cache", MODE_PRIVATE);
         pref.edit()
-                .putLong("callback_dispatch_handler", callbackHandleId)
+                .putLong("callback_handler", callbackHandleId)
                 .apply();
     }
 
@@ -114,6 +114,7 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
             backgroundEngine.getServiceControlSurface().detachFromService();
         }
 
+        methodChannel.setMethodCallHandler(null);
         methodChannel = null;
         dartCallback = null;
         super.onDestroy();
@@ -136,7 +137,8 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
             long callbackHandle = context.getSharedPreferences(
                     "bluetooth_scanner_plugin_cache",
                     Context.MODE_PRIVATE)
-                    .getLong("callback_dispatch_handler", 0);
+                    .getLong("callback_handler", 0);
+            Log.d(TAG, "runService callbackHandle  " + callbackHandle);
 
             FlutterCallbackInformation callback = FlutterCallbackInformation.lookupCallbackInformation(callbackHandle);
             if (callback == null) {
@@ -148,9 +150,7 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
             backgroundEngine = new FlutterEngine(this);
             backgroundEngine.getServiceControlSurface().attachToService(BleBackgroundService.this, null, true);
 
-            methodChannel = new MethodChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), "flutter_ble_lib_bg", JSONMethodCodec.INSTANCE);
-
-            Log.d(TAG, "complete background method channel");
+            methodChannel = new MethodChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), ChannelName.FLUTTER_BLE_LIB_BG);
 
             final EventChannel bluetoothStateChannel = new EventChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), ChannelName.ADAPTER_STATE_CHANGES_BG);
             final EventChannel restoreStateChannel = new EventChannel(backgroundEngine.getDartExecutor().getBinaryMessenger(), ChannelName.STATE_RESTORE_EVENTS_BG);
@@ -176,7 +176,7 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
     }
 
     @Override
-    public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         Log.d(TAG, "background method call : " + call.method);
         switch (call.method) {
             case MethodName.CREATE_CLIENT:
@@ -198,7 +198,7 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
         }
     }
 
-    private void createClient(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+    private void createClient(MethodCall call, MethodChannel.Result result) {
         Log.d(TAG, "createClient : " + call.method);
         if (bleAdapter != null) {
             Log.w(TAG, "Overwriting existing native client. Use BleManager#isClientCreated to check whether a client already exists.");
@@ -219,7 +219,7 @@ public class BleBackgroundService extends Service implements MethodChannel.Metho
         result.success(null);
     }
 
-    private void destroyClient(@NonNull MethodChannel.Result result) {
+    private void destroyClient(MethodChannel.Result result) {
         if (bleAdapter != null) {
             bleAdapter.destroyClient();
         }

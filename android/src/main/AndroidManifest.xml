@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.polidea.flutter_ble_lib">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application>
         <service android:name=".BleBackgroundService"/>
     </application>

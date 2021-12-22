@@ -32,8 +32,11 @@ import com.polidea.multiplatformbleadapter.errors.BleError;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
+import io.flutter.embedding.engine.plugins.service.ServiceAware;
+import io.flutter.embedding.engine.plugins.service.ServicePluginBinding;
 
 import org.json.JSONObject;
 
@@ -48,7 +51,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, ActivityAware {
+public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, ActivityAware, ServiceAware {
 
     static final String TAG = FlutterBleLibPlugin.class.getName();
 
@@ -64,6 +67,7 @@ public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, Ac
 
     static MethodChannel channel;
     private Activity activity;
+    private BleBackgroundService service;
 
     private static FlutterBleLibPlugin factory(Context context, Activity activity) {
         FlutterBleLibPlugin plugin = new FlutterBleLibPlugin();
@@ -118,7 +122,6 @@ public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, Ac
     @Override
     public void onMethodCall(MethodCall call, Result result) {
         Log.d(TAG, "on native side observed method: " + call.method);
-        JSONObject arg = (JSONObject) call.arguments;
 
         for (CallDelegate delegate : delegates) {
             if (delegate.canHandle(call)) {
@@ -148,8 +151,16 @@ public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, Ac
                     isClientCreated(result);
                     break;
                 case "FlutterBLE.requestInitialize":
-                    Log.d(TAG, "FlutterBLE.requestInitialize");
-                    long callbackHandle = arg.getLong("handle");
+                    Map<String, Object> arguments = ((Map<String, Object>) call.arguments);
+                    long callbackHandle = 0;
+                    Object arg1 = arguments.get("handle");
+
+                    if (arg1 instanceof Long) {
+                        callbackHandle = (Long) arg1;
+                    } else {
+                        callbackHandle = Long.valueOf((Integer) arg1);
+                    }
+                    Log.d(TAG, "callbackHandle " + callbackHandle);
                     BleBackgroundService.setCallbackDispatcher(context, callbackHandle);
                     Intent intent = new Intent(context, BleBackgroundService.class);
                     context.startService(intent);
@@ -264,5 +275,18 @@ public class FlutterBleLibPlugin implements MethodCallHandler, FlutterPlugin, Ac
     @Override
     public void onDetachedFromActivity() {
         activity = null;
+    }
+
+    @Override
+    public void onAttachedToService(@NonNull ServicePluginBinding binding) {
+        Log.d(TAG, "ble onAttachedToService " + binding.getService());
+        if (!binding.getService().toString().contains("com.polidea.flutter_ble_lib.BleBackgroundService")) return;
+        this.service = (BleBackgroundService) binding.getService();
+    }
+
+    @Override
+    public void onDetachedFromService() {
+        this.service = null;
+        Log.d(TAG, "ble onDetachedFromService");
     }
 }

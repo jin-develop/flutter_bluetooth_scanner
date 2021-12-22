@@ -25,6 +25,10 @@ mixin ScanningMixin on FlutterBLE {
     _activeScanEvents = null;
   }
 
+  Stream<ScanResult> scanResults() {
+    return _scanEvents;
+  }
+
   Stream<ScanResult> startDeviceScan(
     int scanMode,
     int callbackType,

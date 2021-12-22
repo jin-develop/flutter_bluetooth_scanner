@@ -56,6 +56,8 @@ abstract class BleManager {
   /// Checks whether the native client exists.
   Future<bool> isClientCreated();
 
+  Future<void> initialize(void Function() bleStart);
+
   /// Allocates native resources.
   ///
   /// [restoreStateIdentifier] and [restoreStateAction] are iOS-specific.
@@ -100,6 +102,8 @@ abstract class BleManager {
     List<String> uuids = const [],
     bool allowDuplicates = false,
   });
+
+  Stream<ScanResult> get scanEvents;
 
   /// Finishes the scan operation on the device.
   Future<void> stopPeripheralScan();
